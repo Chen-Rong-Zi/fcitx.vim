@@ -82,8 +82,8 @@ endfunction
 " ---------------------------------------------------------------------
 "  Restoration And Modelines:
 let &cpo=s:keepcpo
-unlet s:你keepcpo
+unlet s:keepcpo
 
-command FcitxStart call s:FcitxStart()
-command FcitxStop  autocmd! Fcitx
+command! FcitxStart call s:FcitxStart()
+command! FcitxStop  autocmd! Fcitx
 " vim: sw=2 :
