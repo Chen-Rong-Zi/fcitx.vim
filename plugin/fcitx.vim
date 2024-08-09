@@ -5,6 +5,7 @@ scriptencoding utf-8
 " URL:		https://www.vim.org/scripts/script.php?script_id=3764
 " ---------------------------------------------------------------------
 " Load Once:
+
 if &cp || exists("g:loaded_fcitx") || (!exists('$DISPLAY') && !exists('$WAYLAND_DISPLAY'))
   finish
 endif
@@ -63,20 +64,26 @@ elseif has('python3')
 endif
 
 " Register autocmd if successfully loaded.
-if exists("g:loaded_fcitx")
-  if exists('##InsertLeavePre')
-    au InsertLeavePre * if reg_executing() == "" | call Fcitx2en() | endif
-  else
-    au InsertLeave * if reg_executing() == "" | call Fcitx2en() | endif
+function! s:FcitxStart()
+  if exists("g:loaded_fcitx")
+    augroup Fcitx
+    if exists('##InsertLeavePre')
+      au InsertLeavePre * if reg_executing() == "" | call Fcitx2en() | endif
+    else
+      au InsertLeave * if reg_executing() == "" | call Fcitx2en() | endif
+    endif
+    au InsertEnter * if reg_executing() == "" | call Fcitx2zh() | endif
+    au CmdlineEnter [/\?] if reg_executing() == "" | call Fcitx2zh() | endif
+    au CmdlineLeave [/\?] if reg_executing() == "" | call Fcitx2en() | endif
+    augroup End
   endif
-  au InsertEnter * if reg_executing() == "" | call Fcitx2zh() | endif
-  au CmdlineEnter [/\?] if reg_executing() == "" | call Fcitx2zh() | endif
-  au CmdlineLeave [/\?] if reg_executing() == "" | call Fcitx2en() | endif
-endif
+endfunction
 
 " ---------------------------------------------------------------------
 "  Restoration And Modelines:
 let &cpo=s:keepcpo
-unlet s:keepcpo
+unlet s:你keepcpo
 
+command FcitxStart call s:FcitxStart()
+command FcitxStop  autocmd! Fcitx
 " vim: sw=2 :
